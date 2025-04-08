@@ -6,7 +6,7 @@ This project focuses on optimizing the delivery logistics for durian transportat
 
 Files:
 
-Durian Logistic System: [Link to the source code or related files]
+Durian Logistic System: https://docs.google.com/spreadsheets/d/1CviMQcu49Z5GLMRs4jcVyZG1G4pm3cvqrlVdrs26-ms/edit?usp=sharing
 
 2. Feature Selection & Predictive Modeling
 This project focuses on feature selection techniques such as Chi-Square, Mutual Information (MI), and Random Forest, followed by predictive modeling using machine learning algorithms.
