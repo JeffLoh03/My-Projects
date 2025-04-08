@@ -1,0 +1,371 @@
+var maxRetries = 3;
+var retryDelay = 5000; // 5 seconds
+var kgPerBucket = 50; // Each bucket holds 50 kg
+var baseSpeed = 90; // Base speed in km/h
+
+function processDeliveries() {
+  Logger.log('Starting processDeliveries');
+  
+  var sheetName = 'Requires'; // Update this to match the actual sheet name
+  var spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadsheet.getSheetByName(sheetName);
+
+  if (!sheet) {
+    Logger.log('Sheet not found: ' + sheetName);
+    Logger.log('Available sheets: ' + spreadsheet.getSheets().map(sheet => sheet.getName()).join(', '));
+    return;
+  }
+
+  // Set the format of specific columns to text
+  setColumnFormatToText(sheet, [8, 9]); // Assuming columns 8 and 9 contain date and time
+  
+  var truckSheetName = 'Truck Details';
+  var truckSheet = spreadsheet.getSheetByName(truckSheetName);
+  
+  if (!truckSheet) {
+    Logger.log('Sheet not found: ' + truckSheetName);
+    Logger.log('Available sheets: ' + spreadsheet.getSheets().map(sheet => sheet.getName()).join(', '));
+    return;
+  }
+
+  var truckData = truckSheet.getDataRange().getValues();
+  if (truckData.length <= 1) {
+    Logger.log('No truck data found in the sheet: ' + truckSheetName);
+    return;
+  }
+
+  var trucks = truckData.slice(1).map(function(row) {
+    return { id: row[0], capacity: parseInt(row[1]), type: row[2], speed: baseSpeed, deliveries: [], route: [] };
+  });
+
+  var data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    Logger.log('No data found in the sheet: ' + sheetName);
+    return;
+  }
+
+  var deliveries = data.slice(1); // Skip header row
+
+  deliveries.forEach(function(delivery, index) {
+    try {
+      Logger.log('Processing delivery row: ' + (index + 1));
+      processSingleDelivery(delivery, index + 1, trucks);
+    } catch (error) {
+      Logger.log('Error processing delivery row ' + (index + 1) + ': ' + error.message);
+    }
+  });
+
+  Logger.log('All deliveries processed');
+}
+
+function processSingleDelivery(delivery, index, trucks) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Processed Deliveries');
+  var failedSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Failed Deliveries');
+  var truckAssignmentsSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Truck Assignments');
+
+  if (!sheet) {
+    sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Processed Deliveries');
+    sheet.appendRow(['Delivery ID', 'Customer Name', 'Street Address', 'Postcode', 'City', 'State', 'Country', 'Full Address Used for Geocoding', 'Geocoded Address', 'ETA (hours and minutes)', 'Exact Time of Arrival', 'Truck ID', 'Combined with', 'Origin', 'Status', 'Suggested Departure Time']);
+  }
+
+  if (!failedSheet) {
+    failedSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Failed Deliveries');
+    failedSheet.appendRow(['Delivery ID', 'Customer Name', 'Street Address', 'Postcode', 'City', 'State', 'Country', 'Reason for Failure', 'Error Message']);
+  }
+
+  if (!truckAssignmentsSheet) {
+    truckAssignmentsSheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet('Truck Assignments');
+    truckAssignmentsSheet.appendRow(['Truck ID', 'Delivery ID', 'Customer Name', 'Street Address', 'Postcode', 'City', 'State', 'Country', 'Geocoded Address', 'ETA (hours and minutes)', 'Exact Time of Arrival', 'Suggested Departure Time']);
+  }
+
+  var deliveryId = 'D' + index;
+  var customerName = delivery[1]; // Assuming 1st column is the customer name
+  var kgRaw = delivery[2]; // Assuming 2nd column is the number of kg
+  var kg = parseFloat(kgRaw);
+  var streetAddress = delivery[3]; // Assuming 3rd column is the street address
+  var postcode = delivery[4]; // Assuming 4th column is the postcode
+  var city = delivery[5]; // Assuming 5th column is the city
+  var state = delivery[6]; // Assuming 6th column is the state
+  var country = delivery[7]; // Assuming 7th column is the country
+  var datePart = delivery[8]; // Assuming date is in the 8th column
+  var timePart = delivery[9]; // Assuming time is in the 9th column
+  var desiredDeliveryDateTimeRaw = datePart + ' ' + timePart;
+
+  Logger.log('Raw data - kg: ' + kgRaw);
+  Logger.log('Parsed data - kg: ' + kg);
+
+  var buckets = Math.ceil(kg / kgPerBucket); // Calculate the number of buckets needed
+
+  Logger.log('Processing delivery ID: ' + deliveryId + ', Customer: ' + customerName + ', Address: ' + streetAddress + ', Postcode: ' + postcode + ', City: ' + city + ', State: ' + state + ', Country: ' + country + ', Buckets: ' + buckets);
+
+  if (isNaN(buckets) || buckets <= 0) {
+    Logger.log('Error: Invalid number of buckets for delivery ID: ' + deliveryId);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'Invalid number of buckets', 'Number of buckets is not valid']);
+    return;
+  }
+
+  var fullAddress = streetAddress + ', ' + postcode + ' ' + city + ', ' + state + ', ' + country;
+  var geocodedAddress = getCachedGeocode(fullAddress);
+
+  if (!geocodedAddress) {
+    Logger.log('Geocoding error for address: ' + fullAddress);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'Geocoding failed', 'Geocoding failed for address: ' + fullAddress]);
+    return;
+  }
+
+  var formattedGeocodedAddress = geocodedAddress.formatted_address;
+  var addressComponents = geocodedAddress.address_components;
+  var geocodedCountry = addressComponents.find(component => component.types.includes('country')).long_name;
+  
+  // Check if the country matches the provided country
+  if (country !== geocodedCountry) {
+    Logger.log('Geocoding country mismatch for address: ' + fullAddress);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'Geocoding country mismatch', 'Geocoding result does not match the expected country for address: ' + fullAddress]);
+    return;
+  }
+
+  Logger.log('Full address used for geocoding: ' + fullAddress);
+  Logger.log('Geocoded address: ' + formattedGeocodedAddress);
+
+  // Add debug logs for desired delivery date and time
+  Logger.log('Desired Delivery DateTime Raw: ' + desiredDeliveryDateTimeRaw);
+
+  // Parse date and time
+  var desiredDeliveryDateTime = parseDateAndTime(desiredDeliveryDateTimeRaw);
+  if (!desiredDeliveryDateTime) {
+    Logger.log('Invalid date/time format for delivery ID: ' + deliveryId);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'Invalid date/time format', 'Invalid date/time format for delivery ID: ' + deliveryId]);
+    return;
+  }
+
+  Logger.log('Parsed Desired Delivery DateTime: ' + desiredDeliveryDateTime.toISOString());
+
+  // Find a suitable truck based on proximity and available capacity
+  var assignedTruck = null;
+  for (var j = 0; j < trucks.length; j++) {
+    Logger.log('Checking Truck ID: ' + trucks[j].id + ', Available Capacity: ' + trucks[j].capacity);
+    if (trucks[j].capacity >= buckets) {
+      if (trucks[j].route.length === 0 || canCombine(trucks[j], formattedGeocodedAddress)) {
+        assignedTruck = trucks[j];
+        break;
+      }
+    }
+  }
+
+  if (!assignedTruck) {
+    Logger.log('No truck available for delivery: ' + deliveryId);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'No truck available', 'No truck available for delivery: ' + deliveryId]);
+    return;
+  }
+
+  Logger.log('Assigned Truck ID: ' + assignedTruck.id + ' for Delivery ID: ' + deliveryId);
+
+  // Calculate route for the delivery
+  var directions = Maps.newDirectionFinder()
+                       .setOrigin('Raub, Pahang, Malaysia') // Set the fixed origin
+                       .setDestination(formattedGeocodedAddress)
+                       .setOptimizeWaypoints(true);
+  
+  // Add waypoints if there are other deliveries in the truck
+  assignedTruck.deliveries.forEach(function(d) {
+    directions.addWaypoint(d.geocodedAddress);
+  });
+  
+  var route = directions.getDirections();
+  if (!route || !route.routes || route.routes.length === 0) {
+    Logger.log('No routes found for address: ' + fullAddress);
+    failedSheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, 'No routes found', 'No routes found for address: ' + fullAddress]);
+    return;
+  }
+
+  var routeLegs = route.routes[0].legs;
+  var etaInSeconds = calculateETA(routeLegs, assignedTruck.speed);
+  var eta = convertSecondsToHMS(etaInSeconds);
+
+  // Ensure the exactArrivalTime matches the desiredDeliveryDateTime
+  var exactArrivalTime = calculateExactArrivalTime(etaInSeconds, desiredDeliveryDateTime);
+
+  // Calculate the departure time based on the desired delivery time and ETA
+  var departureTime = calculateDepartureTime(etaInSeconds, desiredDeliveryDateTime);
+
+  Logger.log('ETA for address ' + fullAddress + ': ' + eta);
+  Logger.log('Exact arrival time for address ' + fullAddress + ': ' + exactArrivalTime);
+  Logger.log('Departure time for address ' + fullAddress + ': ' + departureTime);
+
+  // Assign the delivery to the truck
+  assignedTruck.capacity -= buckets;
+  assignedTruck.deliveries.push({ id: deliveryId, geocodedAddress: formattedGeocodedAddress });
+  assignedTruck.route.push(formattedGeocodedAddress);
+
+  // Log the successful result to the "Processed Deliveries" sheet
+  sheet.appendRow([deliveryId, customerName, streetAddress, postcode, city, state, country, fullAddress, formattedGeocodedAddress, eta, exactArrivalTime, assignedTruck.id, assignedTruck.deliveries.map(d => d.id).join(', '), 'Raub, Pahang, Malaysia', 'Success', departureTime]);
+
+  // Update the "Truck Assignments" sheet
+  truckAssignmentsSheet.appendRow([assignedTruck.id, deliveryId, customerName, streetAddress, postcode, city, state, country, formattedGeocodedAddress, eta, exactArrivalTime, departureTime]);
+
+  // Auto-extend column widths in the "Truck Assignments" sheet
+  autoExtendColumnWidths(truckAssignmentsSheet);
+  autoExtendColumnWidths(sheet);  // Also auto-extend column widths in the "Processed Deliveries" sheet
+}
+
+function autoExtendColumnWidths(sheet) {
+  var range = sheet.getDataRange();
+  var numColumns = range.getNumColumns();
+  
+  for (var i = 1; i <= numColumns; i++) {
+    sheet.autoResizeColumn(i);
+  }
+}
+
+function parseDateAndTime(dateTimeString) {
+  Logger.log('Parsing date and time: ' + dateTimeString);
+
+  if (!dateTimeString) {
+    Logger.log('DateTime string is undefined');
+    return null;
+  }
+
+  // Check if the dateTimeString contains both date and time
+  var dateTimeParts = dateTimeString.split(' ');
+
+  if (dateTimeParts.length !== 2) {
+    Logger.log('DateTime string does not contain both date and time');
+    return null;
+  }
+
+  var dateString = dateTimeParts[0];
+  var timeString = dateTimeParts[1];
+
+  // Regular expression to match yyyy-m-dd and yyyy-mm-dd formats
+  var dateRegex = /^(\d{4})-(\d{1,2})-(\d{1,2})$/;
+  var dateMatch = dateString.match(dateRegex);
+
+  // Regular expression to match HH:MM format
+  var timeRegex = /^(\d{1,2}):(\d{2})$/;
+  var timeMatch = timeString.match(timeRegex);
+
+  if (!dateMatch || !timeMatch) {
+    Logger.log('Date or time string does not match expected format');
+    return null;
+  }
+
+  var year = parseInt(dateMatch[1], 10);
+  var month = parseInt(dateMatch[2], 10) - 1; // Months are 0-based in JavaScript
+  var day = parseInt(dateMatch[3], 10);
+
+  var hours = parseInt(timeMatch[1], 10);
+  var minutes = parseInt(timeMatch[2], 10);
+
+  // Create a new Date object with the parsed values
+  var date = new Date(year, month, day, hours, minutes);
+
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+    Logger.log('Parsed date is invalid');
+    return null;
+  }
+
+  return date;
+}
+
+function setColumnFormatToText(sheet, columns) {
+  columns.forEach(function(column) {
+    sheet.getRange(2, column, sheet.getMaxRows() - 1).setNumberFormat('@STRING@');
+  });
+}
+
+function getCachedGeocode(address) {
+  var cache = CacheService.getScriptCache();
+  var cachedResult = cache.get(address);
+  if (cachedResult) {
+    return JSON.parse(cachedResult);
+  }
+  for (var retry = 0; retry < maxRetries; retry++) {
+    try {
+      var geocodedAddress = Maps.newGeocoder().geocode(address);
+      if (geocodedAddress.status === 'OK' && geocodedAddress.results.length > 0) {
+        cache.put(address, JSON.stringify(geocodedAddress.results[0]), 21600); // Cache for 6 hours
+        return geocodedAddress.results[0];
+      } else if (geocodedAddress.status === 'OVER_QUERY_LIMIT') {
+        Logger.log('Geocoding quota exceeded');
+        return 'OVER_QUERY_LIMIT';
+      } else {
+        return null;
+      }
+    } catch (e) {
+      Logger.log('Geocoding error for address: ' + address + ' - ' + e.message);
+      if (retry < maxRetries - 1) {
+        Utilities.sleep(retryDelay);
+      } else {
+        return null;
+      }
+    }
+  }
+  return null;
+}
+
+function canCombine(truck, newAddress) {
+  for (var i = 0; i < truck.route.length; i++) {
+    if (isNearby(truck.route[i], newAddress)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isNearby(address1, address2) {
+  var loc1 = getCachedGeocode(address1);
+  var loc2 = getCachedGeocode(address2);
+  if (!loc1 || loc1 === 'OVER_QUERY_LIMIT') {
+    Logger.log('Quota limit reached for address1');
+    return false;
+  }
+  if (!loc2 || loc2 === 'OVER_QUERY_LIMIT') {
+    Logger.log('Quota limit reached for address2');
+    return false;
+  }
+  var distance = haversineDistance(loc1.geometry.location.lat, loc1.geometry.location.lng, loc2.geometry.location.lat, loc2.geometry.location.lng);
+  Logger.log('Distance between ' + address1 + ' and ' + address2 + ': ' + distance + ' km');
+  return distance <= 50; // Assuming 50 km as the threshold for combining deliveries
+}
+
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the Earth in km
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLon = (lon2 - lon1) * Math.PI / 180;
+  var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  var distance = R * c;
+  return distance;
+}
+
+function calculateETA(routeLegs, speed) {
+  var totalDuration = 0;
+  routeLegs.forEach(function(leg) {
+    totalDuration += leg.duration.value / speed * baseSpeed; // Adjust the duration based on truck speed
+  });
+  return totalDuration;
+}
+
+function convertSecondsToHMS(seconds) {
+  var h = Math.floor(seconds / 3600);
+  var m = Math.floor((seconds % 3600) / 60);
+  return h + ' hours ' + m + ' minutes';
+}
+
+function calculateExactArrivalTime(durationInSeconds, desiredDeliveryDateTime) {
+  var arrivalDateTime = new Date(desiredDeliveryDateTime.getTime() + durationInSeconds * 1000);
+  return arrivalDateTime.toISOString().replace("T", " ").substring(0, 19);
+}
+
+function calculateDepartureTime(durationInSeconds, desiredDeliveryDateTime) {
+  var departureDateTime = new Date(desiredDeliveryDateTime.getTime() - durationInSeconds * 1000);
+  return departureDateTime.toISOString().replace("T", " ").substring(0, 19);
+}
+// Function to run the processDeliveries from a button
+function runProcessDeliveries() {
+  Logger.log('Starting runProcessDeliveries');
+  processDeliveries();
+}
