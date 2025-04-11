@@ -36,4 +36,7 @@ A platform designed to track and analyze users' mental wellness over time, offer
 Files:
 
 mental;-wellness-platform.zip: A zipped file containing the full source code or project materials.
+5. Hospital Manage System
+A System that help patient Manage Patients Info and Status’ and ‘Manage Hospital Rooms Info and Status’.
+Files: Hospital Manage System.py
 
