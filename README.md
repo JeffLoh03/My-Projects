@@ -40,3 +40,9 @@ mental;-wellness-platform.zip: A zipped file containing the full source code or 
 A System that help patient Manage Patients Info and Status’ and ‘Manage Hospital Rooms Info and Status’.
 Files: Hospital Manage System.py
 
+6. Credit Card Validation
+This system validate the credit card and the type of credit card
+Files: Credit Card.zip
+
+
+
