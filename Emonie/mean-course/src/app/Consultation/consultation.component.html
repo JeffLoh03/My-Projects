@@ -1,0 +1,195 @@
+<div class="consultation-container">
+  <div class="consultation-header">
+    <h2>Book a Consultation</h2>
+    <p>Schedule your consultation with our mental health professionals</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <button class="create-consultation-btn" (click)="showForm = true" *ngIf="!showForm">
+    <i class="fas fa-plus"></i> Schedule New Consultation
+  </button>
+
+  <div class="consultation-form" *ngIf="showForm">
+    <h3>New Consultation</h3>
+    
+    <div class="form-group">
+      <label for="patientName">Patient Name:</label>
+      <input 
+        type="text" 
+        id="patientName" 
+        [(ngModel)]="newConsultation.patientName" 
+        placeholder="Enter your name"
+        class="form-input"
+      >
+    </div>
+
+    <div class="form-group">
+      <label>Select Doctor:</label>
+      <div class="doctors-grid">
+        <div 
+          *ngFor="let doctor of doctors" 
+          class="doctor-card" 
+          [class.selected]="newConsultation.doctorName === doctor.name"
+          (click)="selectDoctor(doctor)"
+        >
+          <div class="doctor-info">
+            <h4>{{ doctor.name }}</h4>
+            <p class="specialty">{{ doctor.specialty }}</p>
+            <div class="availability">
+              <p>Available on:</p>
+              <ul>
+                <li *ngFor="let day of doctor.availability">{{ day }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="consultationType">Consultation Type:</label>
+      <select 
+        id="consultationType" 
+        [(ngModel)]="newConsultation.consultationType"
+        class="form-input"
+      >
+        <option *ngFor="let type of consultationTypes" [value]="type">
+          {{ type }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="date">Preferred Date:</label>
+      <input 
+        type="date" 
+        id="date" 
+        [(ngModel)]="newConsultation.date"
+        (ngModelChange)="onDateChange()"
+        [min]="selectedDate | date:'yyyy-MM-dd'"
+        class="form-input"
+      >
+      <div class="validation-message" *ngIf="newConsultation.doctorName && !isDateAvailable(newConsultation.date, newConsultation.doctorName)">
+        Selected doctor is not available on this day.
+      </div>
+    </div>
+
+    <div class="form-group" *ngIf="availableTimeSlots.length > 0">
+      <label for="timeSlot">Available Time Slots:</label>
+      <select 
+        id="timeSlot" 
+        [(ngModel)]="newConsultation.timeSlot"
+        class="form-input"
+        required
+      >
+        <option value="">Select a time slot</option>
+        <option *ngFor="let slot of availableTimeSlots" [value]="slot">
+          {{ slot }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="notes">Additional Notes:</label>
+      <textarea 
+        id="notes" 
+        [(ngModel)]="newConsultation.notes"
+        placeholder="Any specific concerns or information you'd like to share?"
+        class="form-textarea"
+      ></textarea>
+    </div>
+
+    <div class="form-actions">
+      <button class="cancel-btn" (click)="showForm = false">
+        <i class="fas fa-times"></i> Cancel
+      </button>
+      <button class="save-btn" (click)="addConsultation()">
+        <i class="fas fa-check"></i> Schedule Consultation
+      </button>
+    </div>
+  </div>
+
+  <div class="consultation-list" *ngIf="consultations.length > 0">
+    <div class="consultation-item" *ngFor="let consultation of consultations">
+      <div class="consultation-details" [class.editing]="editingConsultation?._id === consultation._id">
+        <div *ngIf="editingConsultation?._id !== consultation._id">
+          <h3>{{ consultation.patientName }}</h3>
+          <p><strong>Doctor:</strong> {{ consultation.doctorName }}</p>
+          <p><strong>Type:</strong> {{ consultation.consultationType }}</p>
+          <p><strong>Date:</strong> {{ consultation.date | date:'medium' }}</p>
+          <p><strong>Time Slot:</strong> {{ consultation.timeSlot }}</p>
+          <p *ngIf="consultation.notes"><strong>Notes:</strong> {{ consultation.notes }}</p>
+          <div class="todo-actions">
+            <button class="edit-button" (click)="startEdit(consultation)">
+              <fa-icon [icon]="faPencil"></fa-icon>
+              Edit
+            </button>
+            <button class="delete-button" (click)="deleteConsultation(consultation._id)">
+              <fa-icon [icon]="faTrashCan"></fa-icon>
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="editingConsultation?._id === consultation._id" class="edit-form">
+          <input 
+            [(ngModel)]="editingConsultation!.patientName" 
+            placeholder="Patient Name"
+            class="form-input"
+          >
+          <select 
+            [(ngModel)]="editingConsultation!.doctorName" 
+            (change)="updateAvailableTimeSlots()"
+            class="form-input"
+          >
+            <option value="">Select Doctor</option>
+            <option *ngFor="let doctor of doctors" [value]="doctor.name">
+              {{ doctor.name }} ({{ doctor.specialty }})
+            </option>
+          </select>
+          <select 
+            [(ngModel)]="editingConsultation!.consultationType"
+            class="form-input"
+          >
+            <option *ngFor="let type of consultationTypes" [value]="type">{{ type }}</option>
+          </select>
+          <input 
+            type="date" 
+            [(ngModel)]="editingConsultation!.date" 
+            (change)="updateAvailableTimeSlots()"
+            class="form-input"
+          >
+          <select 
+            [(ngModel)]="editingConsultation!.timeSlot"
+            class="form-input"
+          >
+            <option value="">Select Time Slot</option>
+            <option *ngFor="let slot of availableTimeSlots" [value]="slot">{{ slot }}</option>
+          </select>
+          <textarea 
+            [(ngModel)]="editingConsultation!.notes" 
+            placeholder="Additional Notes"
+            class="form-textarea"
+          ></textarea>
+          <div class="action-buttons">
+            <button class="save-btn" (click)="saveEdit()">
+              <fa-icon [icon]="faSave"></fa-icon>
+              Save Changes
+            </button>
+            <button class="cancel-btn" (click)="cancelEdit()">
+              <fa-icon [icon]="faTimes"></fa-icon>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-consultations" *ngIf="consultations.length === 0">
+    <p>No consultations scheduled yet. Book your first consultation above!</p>
+  </div>
+</div>

@@ -1,0 +1,129 @@
+<div class="todo-container">
+  <div class="header">
+    <h1>My Todo List</h1>
+    <p>Track your tasks and stay organized</p>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="actions">
+    <button class="primary-button add-task-button" (click)="showCreateForm = !showCreateForm">
+      <div class="button-content">
+        <fa-icon [icon]="faPlus" class="plus-icon"></fa-icon>
+        <span>{{ showCreateForm ? 'Cancel' : 'Add New Task' }}</span>
+      </div>
+    </button>
+
+    <div class="filter-section">
+      <label>Filter by Category:</label>
+      <select [(ngModel)]="selectedFilter" (change)="filterTodos()">
+        <option value="">All Tasks</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="quick-actions" *ngIf="!showCreateForm && !editingTodo">
+    <div *ngFor="let action of quickActions" class="quick-action-category">
+      <h3>{{ action.category }}</h3>
+      <div class="quick-action-tasks">
+        <button *ngFor="let task of action.tasks" 
+                class="quick-action-button"
+                (click)="addQuickAction(task, action.category)">
+          {{ task }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <form *ngIf="showCreateForm" class="todo-form" (ngSubmit)="addTodo(); $event.preventDefault()">
+    <div class="form-group">
+      <label for="title">Task:</label>
+      <input type="text" id="title" [(ngModel)]="newTodo.title" name="title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category:</label>
+      <select id="category" [(ngModel)]="newTodo.category" name="category" required>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="dueDate">Due Date:</label>
+      <input type="datetime-local" id="dueDate" [(ngModel)]="newTodo.dueDate" name="dueDate" required>
+    </div>
+
+    <button type="submit" class="submit-button">
+      <div class="button-content">
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span>Add Task</span>
+      </div>
+    </button>
+  </form>
+
+  <form *ngIf="editingTodo" class="todo-form">
+    <div class="form-group">
+      <label for="editTitle">Task:</label>
+      <input type="text" id="editTitle" [(ngModel)]="editingTodo.title" name="editTitle" required>
+    </div>
+
+    <div class="form-group">
+      <label for="editCategory">Category:</label>
+      <select id="editCategory" [(ngModel)]="editingTodo.category" name="editCategory" required>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="editDueDate">Due Date:</label>
+      <input type="datetime-local" id="editDueDate" [(ngModel)]="editingTodo.dueDate" name="editDueDate" required>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="saveEdit()">
+        <fa-icon [icon]="faSave"></fa-icon>
+        Save Changes
+      </button>
+      <button type="button" class="cancel-button" (click)="cancelEdit()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+        Cancel
+      </button>
+    </div>
+  </form>
+
+  <div class="todo-list" *ngIf="filteredTodos.length > 0">
+    <div class="todo-item" *ngFor="let todo of filteredTodos">
+      <div class="todo-content">
+        <input type="checkbox" 
+               [checked]="todo.completed"
+               (change)="toggleComplete(todo)">
+        <span [class.completed]="todo.completed">{{ todo.title }}</span>
+      </div>
+      <div class="todo-details">
+        <span class="category">{{ todo.category }}</span>
+        <span class="date">{{ todo.dueDate | date:'mediumDate' }}</span>
+        <div class="todo-actions">
+          <button class="edit-button" (click)="startEdit(todo)">
+            <fa-icon [icon]="faEdit"></fa-icon>
+            Edit
+          </button>
+          <button class="delete-button" (click)="deleteTodo(todo._id!)">
+            <fa-icon [icon]="faTrash"></fa-icon>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-todos" *ngIf="filteredTodos.length === 0">
+    <p>No tasks found. Start by adding your first task!</p>
+  </div>
+</div>

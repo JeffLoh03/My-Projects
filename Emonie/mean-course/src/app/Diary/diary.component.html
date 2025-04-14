@@ -1,0 +1,132 @@
+<div class="diary-container">
+  <div class="header">
+    <h1>Daily Diary Entries</h1>
+    <p>Record your thoughts, feelings, and experiences</p>
+  </div>
+
+  <div class="error-message" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="actions">
+    <button class="add-button" (click)="showCreateForm = !showCreateForm">
+      <fa-icon [icon]="faPencilAlt"></fa-icon>
+      {{ showCreateForm ? 'Cancel' : 'Write New Entry' }}
+    </button>
+
+    <div class="filter-section">
+      <label>Filter by Emotion:</label>
+      <select [(ngModel)]="selectedFilter" (change)="filterDiaries()">
+        <option value="">All Entries</option>
+        <option *ngFor="let emotion of emotions" [value]="emotion">
+          {{ emotion }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="emotion-buttons" *ngIf="!showCreateForm && !editingDiary">
+    <button 
+      *ngFor="let emotion of emotions" 
+      class="emotion-button" 
+      [class.active]="selectedFilter === emotion"
+      (click)="selectedFilter = emotion; filterDiaries()">
+      <fa-icon [icon]="getEmotionIcon(emotion)"></fa-icon>
+      {{ emotion }}
+    </button>
+  </div>
+
+  <form *ngIf="showCreateForm" class="diary-form">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" id="title" [(ngModel)]="newDiary.title" name="title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="content">Content:</label>
+      <textarea id="content" [(ngModel)]="newDiary.content" name="content" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="emotion">Emotion:</label>
+      <select id="emotion" [(ngModel)]="newDiary.emotion" name="emotion" required>
+        <option value="">Select an emotion</option>
+        <option *ngFor="let emotion of emotions" [value]="emotion">
+          <fa-icon [icon]="getEmotionIcon(emotion)"></fa-icon>
+          {{ emotion }}
+        </option>
+      </select>
+    </div>
+
+    <button type="submit" class="submit-button" (click)="addDiary()">
+      <div class="button-content">
+        <fa-icon [icon]="faSave"></fa-icon>
+        <span>Save Entry</span>
+      </div>
+    </button>
+  </form>
+
+  <form *ngIf="editingDiary" class="diary-form">
+    <div class="form-group">
+      <label for="editTitle">Title:</label>
+      <input type="text" id="editTitle" [(ngModel)]="editingDiary.title" name="editTitle" required>
+    </div>
+
+    <div class="form-group">
+      <label for="editContent">Content:</label>
+      <textarea id="editContent" [(ngModel)]="editingDiary.content" name="editContent" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="editEmotion">Emotion:</label>
+      <select id="editEmotion" [(ngModel)]="editingDiary.emotion" name="editEmotion" required>
+        <option *ngFor="let emotion of emotions" [value]="emotion">
+          <fa-icon [icon]="getEmotionIcon(emotion)"></fa-icon>
+          {{ emotion }}
+        </option>
+      </select>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="saveEdit()">
+        <fa-icon [icon]="faSave"></fa-icon>
+        Save Changes
+      </button>
+      <button type="button" class="cancel-button" (click)="cancelEdit()">
+        <fa-icon [icon]="faTimes"></fa-icon>
+        Cancel
+      </button>
+    </div>
+  </form>
+
+  <div class="diary-list" *ngIf="filteredDiaries.length > 0">
+    <div class="diary-item" *ngFor="let diary of filteredDiaries">
+      <div class="diary-header">
+        <h3 class="diary-title">{{ diary.title }}</h3>
+        <span class="diary-date">{{ diary.date | date:'medium' }}</span>
+      </div>
+
+      <span class="diary-emotion {{ diary.emotion }}">
+        <fa-icon [icon]="getEmotionIcon(diary.emotion)"></fa-icon>
+        {{ diary.emotion }}
+      </span>
+
+      <div class="diary-content">
+        {{ diary.content }}
+      </div>
+
+      <div class="diary-actions">
+        <button class="edit-button" (click)="startEdit(diary)">
+          <fa-icon [icon]="faEdit"></fa-icon>
+          Edit
+        </button>
+        <button class="delete-button" (click)="deleteDiary(diary._id!)">
+          <fa-icon [icon]="faTrash"></fa-icon>
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-entries" *ngIf="filteredDiaries.length === 0">
+    <p>No diary entries found. Start writing your first entry!</p>
+  </div>
+</div>
