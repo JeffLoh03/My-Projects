@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis - Emonie</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Enhanced Navbar -->
+    <nav class="main-nav">
+        <div class="nav-brand">
+            <a href="main.html">
+                <img src="images/logo.png" alt="Emonie Logo">
+                <span class="brand-text">Emonie</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="main.html"><i class="fas fa-home"></i> Home</a>
+            <a href="diary.html"><i class="fas fa-book"></i> Diary</a>
+            <a href="consultation.html"><i class="fas fa-user-md"></i> Consultation</a>
+            <div class="nav-dropdown">
+                <a href="#" class="dropdown-arrow"><i class="fas fa-ellipsis-h"></i> More</a>
+                <div class="dropdown-content">
+                    <a href="analysis.html" class="active"><i class="fas fa-chart-line"></i> Analysis</a>
+                    <a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a>
+                    <a href="future-message.html"><i class="fas fa-envelope"></i> Future Message</a>
+                    <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div>
+        <!-- Hero Section -->
+        <section class="consultation-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Mood Analysis Dashboard</h1>
+                    <p class="subtitle">Track your emotional journey and celebrate your progress</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analysis Dashboard -->
+        <section class="todo-section glass-effect">
+            <div class="container">
+                <!-- Daily Quote -->
+                <div class="quote">
+                    <div class="quote-icon">
+                        <i class="fas fa-quote-left"></i>
+                    </div>
+                    <div class="quote-content">
+                        <p id="inspirational-quote">Loading daily inspiration...</p>
+                    </div>
+                </div>
+
+                <!-- Mood Overview -->
+                <div class="mood-overview">
+                    <h2 class="section-title">Your Mood Overview</h2>
+                    <div class="chart-container" style="max-width: 500px; margin: 2rem auto;">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Achievements Section -->
+                <div class="achievements-section">
+                    <h2 class="section-title">Your Achievements</h2>
+                    <div class="benefits-grid">
+                        <div class="benefit-card" id="achievement-happy">
+                            <i class="fas fa-smile"></i>
+                            <h3>Happy Soul</h3>
+                            <p>Maintain 40% or more joyful entries</p>
+                            <div class="task-progress"><div class="progress-bar"></div></div>
+                            <span class="achievement-status">Progress: 0%</span>
+                        </div>
+                        <div class="benefit-card" id="achievement-calm">
+                            <i class="fas fa-peace"></i>
+                            <h3>Calm Master</h3>
+                            <p>Keep anxiety and anger below 20%</p>
+                            <div class="task-progress"><div class="progress-bar"></div></div>
+                            <span class="achievement-status">Progress: 0%</span>
+                        </div>
+                        <div class="benefit-card" id="achievement-strong">
+                            <i class="fas fa-heart"></i>
+                            <h3>Strong Heart</h3>
+                            <p>Navigate through challenging emotions</p>
+                            <div class="task-progress"><div class="progress-bar"></div></div>
+                            <span class="achievement-status">Progress: 0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Music Recommendations -->
+                <div class="music-recommendations">
+                    <h2 class="section-title">Music for Your Mood</h2>
+                    <p class="subtitle">Music recommendations based on your current emotional state</p>
+                    <div class="spotify-container">
+                        <iframe id="spotify-player" src="" width="100%" height="152" frameborder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Achievement Modal -->
+    <div class="modal" id="achievement-modal">
+        <div class="modal-content">
+            <div class="quote-icon pulse-animation">
+                <i class="fas fa-medal"></i>
+            </div>
+            <h2>Achievement Unlocked!</h2>
+            <p id="achievement-message">Congratulations! You've earned a new achievement.</p>
+            <button class="btn-consultation">Awesome!</button>
+        </div>
+    </div>
+
+    <script src="js/analysis.js"></script>
+</body>
+</html>

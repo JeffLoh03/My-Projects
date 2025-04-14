@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Mental Wellness Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <!-- Enhanced Navbar -->
+   <nav class="main-nav">
+    <div class="nav-brand">
+      <a href="index.html">
+        <img src="images/logo.png" alt="Emonie Logo">
+        <span class="brand-text">Emonie</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="login.html">
+        <i class="fas fa-sign-in-alt"></i> Login
+      </a>
+      <a href="register.html"class="active">
+        <i class="fas fa-user-plus"></i> Register
+      </a>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- Auth Page Container with Gradient Background -->
+  <main class="auth-page">
+    <div class="auth-container animate-fade-up">
+        <h2>Create an Account</h2>
+        <form id="registerForm" class="fancy-form">
+            <div class="form-group">
+                <label for="name"><i class="fas fa-user"></i> Full Name</label>
+                <input type="text" id="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" required>
+                <!-- Password requirements will be inserted here by JavaScript -->
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+                <input type="password" id="confirmPassword" required>
+                <!-- Password match message will be inserted here by JavaScript -->
+            </div>
+
+            <button type="submit" class="btn-fancy">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+
+        <div class="text-center">
+            <p>Already have an account? 
+                <a href="login.html" class="btn-secondary">Login here</a>
+            </p>
+        </div>
+    </div>
+</main>
+
+  <script src="js/register.js"></script>
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

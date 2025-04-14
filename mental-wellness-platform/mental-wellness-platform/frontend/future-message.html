@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Message - Emonie</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Enhanced Navbar -->
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <a href="main.html">
+        <img src="images/logo.png" alt="Emonie Logo">
+        <span class="brand-text">Emonie</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="main.html">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="diary.html">
+        <i class="fas fa-book"></i> Diary
+      </a>
+      <a href="consultation.html">
+        <i class="fas fa-user-md"></i> Consultation
+      </a>
+      <div class="nav-dropdown">
+        <a href="#" class="dropdown-arrow">
+          <i class="fas fa-ellipsis-h"></i> More
+        </a>
+        <div class="dropdown-content">
+          <a href="analysis.html"><i class="fas fa-chart-line"></i> Analysis</a>
+          <a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a>
+          <a href="future-message.html"class="active"><i class="fas fa-envelope"></i> Future Message</a>
+          <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Main Content -->
+    <div>
+        <!-- Hero Section -->
+        <section class="consultation-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>✨ Message to Future Self 💌</h1>
+                    <p class="subtitle">Send a little bundle of love and hope to your future self 🌟</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Future Message Section -->
+        <section class="todo-section glass-effect">
+            <div class="container">
+                <div class="future-message-container">
+                    <!-- Message Form -->
+                    <div class="message-form">
+                        <div class="form-header">
+                            <div class="cute-envelope">✉️</div>
+                            <h2><i class="fas fa-paper-plane"></i> Write Your Message</h2>
+                            <p>Create a special time capsule filled with your thoughts, dreams, and gentle reminders 🌈</p>
+                        </div>
+                        
+                        <div class="fancy-form">
+                            <div class="form-group">
+                                <label>When should this reach you? 📅</label>
+                                <input type="date" id="delivery-date" min="" required>
+                                <small>Choose a future date (1-12 months) when you'd like to receive this message ⭐</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>A Title for Your Future Self 🎀</label>
+                                <input type="text" id="message-subject" placeholder="Something sweet to catch your attention..." required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Your Special Message 💝</label>
+                                <textarea id="message-content" rows="10" placeholder="Dear Future Me..." required></textarea>
+                            </div>
+
+                            <div class="message-prompts">
+                                <h3>✨ Sprinkle some magic with these prompts:</h3>
+                                <ul class="prompt-list">
+                                    <li>🌟 What makes your heart smile right now?</li>
+                                    <li>🌈 What beautiful dreams are you nurturing?</li>
+                                    <li>💪 What would you like to remind yourself about your incredible strength?</li>
+                                    <li>🌱 What seeds of hope are you planting today?</li>
+                                    <li>💫 What little victories would you like to celebrate?</li>
+                                </ul>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn-consultation" id="send-message">
+                                    <i class="fas fa-paper-plane"></i> Send with Love 💝
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending Messages -->
+                    <div class="pending-messages">
+                        <h2><i class="fas fa-clock"></i> Messages in Your Time Capsule 🎁</h2>
+                        <div class="messages-grid" id="pending-messages-list">
+                            <!-- Messages will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/future-message.js"></script>
+</body>
+</html> 

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Main Feed - Emonie</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="main-page">
+  <!-- Enhanced Navbar -->
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <a href="main.html">
+        <img src="images/logo.png" alt="Emonie Logo">
+        <span class="brand-text">Emonie</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="main.html" class="active">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="diary.html">
+        <i class="fas fa-book"></i> Diary
+      </a>
+      <a href="consultation.html">
+        <i class="fas fa-user-md"></i> Consultation
+      </a>
+      <div class="nav-dropdown">
+        <a href="#" class="dropdown-arrow">
+          <i class="fas fa-ellipsis-h"></i> More
+        </a>
+        <div class="dropdown-content">
+          <a href="analysis.html"><i class="fas fa-chart-line"></i> Analysis</a>
+          <a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a>
+          <a href="future-message.html"><i class="fas fa-envelope"></i> Future Message</a>
+          <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <!-- Welcome Section -->
+      <section class="main-welcome-section">
+        <div class="welcome-card glass-effect">
+          <div class="welcome-text">
+            <h1>Welcome back, Jeff! 👋</h1>
+            <p>How are you feeling today?</p>
+          </div>
+          <div class="mood-selector">
+            <button class="mood-btn" data-mood="happy">
+              <i class="fas fa-smile"></i> Happy
+            </button>
+            <button class="mood-btn" data-mood="calm">
+              <i class="fas fa-peace"></i> Calm
+            </button>
+            <button class="mood-btn" data-mood="tired">
+              <i class="fas fa-bed"></i> Tired
+            </button>
+            <button class="mood-btn" data-mood="anxious">
+              <i class="fas fa-wind"></i> Anxious
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="main-quick-actions glass-effect">
+        <h2>Quick Actions</h2>
+        <div class="action-grid">
+          <button class="action-btn" onclick="location.href='diary.html'">
+            <i class="fas fa-pen-fancy"></i>
+            <span>Write in Diary</span>
+          </button>
+          <button class="action-btn" onclick="location.href='todo.html'">
+            <i class="fas fa-list-check"></i>
+            <span>Add Todo</span>
+          </button>
+          <button class="action-btn" onclick="location.href='consultation.html'">
+            <i class="fas fa-calendar-plus"></i>
+            <span>Book Session</span>
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

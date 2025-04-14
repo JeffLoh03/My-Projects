@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Mental Wellness Platform</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Enhanced Navbar -->
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <a href="index.html">
+        <img src="images/logo.png" alt="Emonie Logo">
+        <span class="brand-text">Emonie</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="login.html">
+        <i class="fas fa-sign-in-alt"class="active"></i> Login
+      </a>
+      <a href="register.html">
+        <i class="fas fa-user-plus"></i> Register
+      </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Auth Page (Gradient Background) -->
+  <main class="auth-page">
+    <!-- Auth Container (White Card) -->
+    <div class="auth-container">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <p>
+        Don't have an account?
+        <a href="register.html">Register here</a>
+      </p>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+  <script>
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>

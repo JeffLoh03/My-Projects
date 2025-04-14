@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diary - Emonie</title>
+  <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+     <!-- Enhanced Navbar -->
+  <nav class="main-nav">
+    <div class="nav-brand">
+      <a href="main.html">
+        <img src="images/logo.png" alt="Emonie Logo">
+        <span class="brand-text">Emonie</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="main.html">
+        <i class="fas fa-home"></i> Home
+      </a>
+      <a href="diary.html" class="active">
+        <i class="fas fa-book"></i> Diary
+      </a>
+      <a href="consultation.html">
+        <i class="fas fa-user-md"></i> Consultation
+      </a>
+      <div class="nav-dropdown">
+        <a href="#" class="dropdown-arrow">
+          <i class="fas fa-ellipsis-h"></i> More
+        </a>
+        <div class="dropdown-content">
+          <a href="analysis.html"><i class="fas fa-chart-line"></i> Analysis</a>
+          <a href="todo.html"><i class="fas fa-tasks"></i> To-Do List</a>
+          <a href="future-message.html"><i class="fas fa-envelope"></i> Future Message</a>
+          <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+          <a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+    <!-- Main Content -->
+    <div>
+        <!-- Diary Hero Section -->
+        <section class="consultation-hero">
+            <div class="container">
+                <div class="hero-content animate-fade-up">
+                    <h1>My Diary Journey</h1>
+                    <p class="subtitle">Track your emotions, thoughts, and growth over time</p>
+                    <button class="btn-fancy create-entry" id="createDiaryBtn">
+                        <i class="fas fa-plus-circle"></i>
+                        Create New Entry
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Diary Timeline -->
+        <section class="diary-timeline">
+            <div class="container">
+                <div class="timeline-header">
+                    <h2>Your Diary History</h2>
+                    <div class="timeline-filters">
+                        <button class="filter-btn active" data-filter="all">All Entries</button>
+                        <button class="filter-btn" data-filter="joy">Joy</button>
+                        <button class="filter-btn" data-filter="sadness">Sadness</button>
+                        <button class="filter-btn" data-filter="anger">Anger</button>
+                        <button class="filter-btn" data-filter="anxiety">Anxiety</button>
+                        <button class="filter-btn" data-filter="numb">Numb</button>
+                    </div>
+                </div>
+
+                <div class="timeline-entries">
+                    <!-- Sample Entry 1 -->
+                    <div class="diary-entry joy animate-fade-right" data-entry-id="1">
+                        <div class="entry-date">
+                            <span class="date">15</span>
+                            <span class="month">Mar</span>
+                            <span class="year">2024</span>
+                        </div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <div class="entry-emotion joy">
+                                    <i class="fas fa-smile"></i>
+                                    <span>Joy</span>
+                                </div>
+                                <div class="entry-meta">
+                                    <div class="entry-weather">
+                                        <i class="fas fa-sun"></i>
+                                        <span>Sunny, 22°C</span>
+                                    </div>
+                                    <div class="entry-sleep">
+                                        <i class="fas fa-moon"></i>
+                                        <span>8 hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3>A Beautiful Day</h3>
+                            <p>Today was filled with wonderful moments...</p>
+                            <div class="entry-image">
+                                <img src="https://via.placeholder.com/300x200" alt="Diary image">
+                            </div>
+                            <div class="entry-actions">
+                                <button class="btn-edit" data-entry-id="1">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="btn-delete" data-entry-id="1">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Entry 2 -->
+                    <div class="diary-entry anxiety animate-fade-left" data-entry-id="2">
+                        <div class="entry-date">
+                            <span class="date">14</span>
+                            <span class="month">Mar</span>
+                            <span class="year">2024</span>
+                        </div>
+                        <div class="entry-content">
+                            <div class="entry-header">
+                                <div class="entry-emotion anxiety">
+                                    <i class="fas fa-wind"></i>
+                                    <span>Anxiety</span>
+                                </div>
+                                <div class="entry-meta">
+                                    <div class="entry-weather">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>Cloudy, 18°C</span>
+                                    </div>
+                                    <div class="entry-sleep">
+                                        <i class="fas fa-moon"></i>
+                                        <span>6 hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3>Overcoming Challenges</h3>
+                            <p>Despite feeling anxious, I managed to...</p>
+                            <div class="entry-actions">
+                                <button class="btn-edit" data-entry-id="2">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="btn-delete" data-entry-id="2">
+                                    <i class="fas fa-trash"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Create Entry Modal -->
+    <div class="modal" id="diaryModal">
+        <div class="modal-content diary-form">
+            <span class="close-btn">&times;</span>
+            <div class="diary-steps">
+                <!-- Step 1: Emotion Selection -->
+                <div class="diary-step active" id="step1">
+                    <h2 class="step-title">How are you feeling today?</h2>
+                    <div class="emotion-grid">
+                        <div class="emotion-card" data-emotion="joy">
+                            <div class="emotion-icon">😊</div>
+                            <span class="emotion-label">Joy</span>
+                            <div class="emotion-description">Happy, excited, grateful</div>
+                        </div>
+                        <div class="emotion-card" data-emotion="sadness">
+                            <div class="emotion-icon">😢</div>
+                            <span class="emotion-label">Sadness</span>
+                            <div class="emotion-description">Down, blue, melancholic</div>
+                        </div>
+                        <div class="emotion-card" data-emotion="anger">
+                            <div class="emotion-icon">😠</div>
+                            <span class="emotion-label">Anger</span>
+                            <div class="emotion-description">Frustrated, irritated</div>
+                        </div>
+                        <div class="emotion-card" data-emotion="anxiety">
+                            <div class="emotion-icon">😰</div>
+                            <span class="emotion-label">Anxiety</span>
+                            <div class="emotion-description">Worried, nervous</div>
+                        </div>
+                        <div class="emotion-card" data-emotion="numb">
+                            <div class="emotion-icon">😐</div>
+                            <span class="emotion-label">Numb</span>
+                            <div class="emotion-description">Empty, disconnected</div>
+                        </div>
+                    </div>
+                    <div class="step-navigation">
+                        <div class="step-progress">
+                            <div class="step-dot active"></div>
+                            <div class="step-dot"></div>
+                            <div class="step-dot"></div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button class="btn-next" disabled>Next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Entry Details -->
+                <div class="diary-step" id="step2">
+                    <h2 class="step-title">Tell me about your day</h2>
+                    <form id="diaryForm" class="fancy-form">
+                        <div class="date-weather-container">
+                            <div class="date-section">
+                                <h3><i class="far fa-calendar"></i> Date</h3>
+                                <input type="date" id="entryDate" required>
+                            </div>
+                            <div class="weather-section">
+                                <h3><i class="fas fa-cloud-sun"></i> Weather</h3>
+                                <div class="weather-grid">
+                                    <button type="button" class="weather-icon-btn" data-weather="sunny">
+                                        <i class="fas fa-sun"></i>
+                                        <span>Sunny</span>
+                                    </button>
+                                    <button type="button" class="weather-icon-btn" data-weather="cloudy">
+                                        <i class="fas fa-cloud"></i>
+                                        <span>Cloudy</span>
+                                    </button>
+                                    <button type="button" class="weather-icon-btn" data-weather="rainy">
+                                        <i class="fas fa-cloud-rain"></i>
+                                        <span>Rainy</span>
+                                    </button>
+                                    <button type="button" class="weather-icon-btn" data-weather="stormy">
+                                        <i class="fas fa-bolt"></i>
+                                        <span>Stormy</span>
+                                    </button>
+                                </div>
+                                <input type="hidden" id="weather" required>
+                            </div>
+                        </div>
+
+                        <div class="sleep-duration-container">
+                            <h3><i class="fas fa-bed"></i> Sleep Duration</h3>
+                            <div class="sleep-duration-grid">
+                                <button type="button" class="sleep-hour-btn" data-hours="1">
+                                    <i class="fas fa-moon"></i>
+                                    <span>1H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="2">
+                                    <i class="fas fa-moon"></i>
+                                    <span>2H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="3">
+                                    <i class="fas fa-moon"></i>
+                                    <span>3H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="4">
+                                    <i class="fas fa-moon"></i>
+                                    <span>4H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="5">
+                                    <i class="fas fa-moon"></i>
+                                    <span>5H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="6">
+                                    <i class="fas fa-moon"></i>
+                                    <span>6H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="7">
+                                    <i class="fas fa-moon"></i>
+                                    <span>7H</span>
+                                </button>
+                                <button type="button" class="sleep-hour-btn" data-hours="8">
+                                    <i class="fas fa-moon"></i>
+                                    <span>8H</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="sleepHours" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-heading"></i> Title</label>
+                            <input type="text" id="entryTitle" placeholder="Give your entry a title" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-pen"></i> Your Thoughts</label>
+                            <textarea id="entryText" placeholder="Write your thoughts here..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-image"></i> Add Image</label>
+                            <div class="image-upload-container">
+                                <label for="entryImage" class="image-upload-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose an image</span>
+                                    <small>or drag and drop here</small>
+                                </label>
+                                <input type="file" id="entryImage" accept="image/*">
+                                <div id="imagePreview" class="image-preview"></div>
+                            </div>
+                        </div>
+                        <div class="step-navigation">
+                            <div class="step-progress">
+                                <div class="step-dot"></div>
+                                <div class="step-dot active"></div>
+                                <div class="step-dot"></div>
+                            </div>
+                            <div class="navigation-buttons">
+                                <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back</button>
+                                <button type="button" class="btn-preview">Preview <i class="fas fa-eye"></i></button>
+                            </div>
+                        </div>
+    </form>
+                </div>
+
+                <!-- Step 3: Preview -->
+                <div class="diary-step" id="step3">
+                    <h2 class="step-title">Preview Your Entry</h2>
+                    <div class="preview-content">
+                        <!-- Preview content will be populated by JavaScript -->
+                    </div>
+                    <div class="step-navigation">
+                        <div class="step-progress">
+                            <div class="step-dot"></div>
+                            <div class="step-dot"></div>
+                            <div class="step-dot active"></div>
+                        </div>
+                        <div class="navigation-buttons">
+                            <button type="button" class="btn-back"><i class="fas fa-arrow-left"></i> Back to Edit</button>
+                            <button type="button" class="btn-confirm">Save Entry <i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+  <script src="script.js"></script>
+    <script src="js/diary.js"></script>
+</body>
+</html>

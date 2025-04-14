@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Todo - Emonie</title>
+        <link rel="stylesheet" href="styles.css">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+      </head>
+      <body>
+         <!-- Enhanced Navbar -->
+        <nav class="main-nav">
+            <div class="nav-brand">
+            <a href="main.html">
+                <img src="images/logo.png" alt="Emonie Logo">
+                <span class="brand-text">Emonie</span>
+            </a>
+            </div>
+            <div class="nav-links">
+            <a href="main.html">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="diary.html">
+                <i class="fas fa-book"></i> Diary
+            </a>
+            <a href="consultation.html">
+                <i class="fas fa-user-md"></i> Consultation
+            </a>
+            <div class="nav-dropdown">
+                <a href="#" class="dropdown-arrow">
+                <i class="fas fa-ellipsis-h"></i> More
+                </a>
+                <div class="dropdown-content">
+                <a href="analysis.html"><i class="fas fa-chart-line"></i> Analysis</a>
+                <a href="todo.html"class="active"><i class="fas fa-tasks"></i> To-Do List</a>
+                <a href="future-message.html"><i class="fas fa-envelope"></i> Future Message</a>
+                <a href="profile.html"><i class="fas fa-user-circle"></i> Profile</a>
+                <a href="login.html"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+                </div>
+            </div>
+            </div>
+        </nav>
+      
+    <!-- Main Content -->
+    <div>
+        <!-- Todo Hero Section -->
+        <section class="consultation-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>My To-Do List</h1>
+                    <p class="subtitle">Track your daily wellness activities and build healthy habits</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Todo Section -->
+        <section class="todo-section glass-effect">
+            <div class="container">
+                <!-- Categories -->
+                <div class="todo-categories">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-list"></i>
+                        All Tasks
+                        <span class="category-count">3</span>
+                    </button>
+                    <button class="category-btn" data-category="mindfulness">
+                        <i class="fas fa-peace"></i>
+                        Mindfulness
+                        <span class="category-count">2</span>
+                    </button>
+                    <button class="category-btn" data-category="exercise">
+                        <i class="fas fa-running"></i>
+                        Exercise
+                        <span class="category-count">1</span>
+                    </button>
+                    <button class="category-btn" data-category="selfcare">
+                        <i class="fas fa-spa"></i>
+                        Self Care
+                        <span class="category-count">0</span>
+                    </button>
+                </div>
+
+                <!-- Task Input -->
+                <div class="task-input-group">
+                    <input type="text" id="taskInput" placeholder="Add a new wellness task...">
+                    <select id="taskCategory">
+                        <option value="mindfulness">Mindfulness</option>
+                        <option value="exercise">Exercise</option>
+                        <option value="selfcare">Self Care</option>
+                    </select>
+                    <button id="addTaskBtn" class="btn-consultation">
+                        <i class="fas fa-plus"></i>
+                        Add Task
+                    </button>
+                </div>
+
+                <!-- Tasks List -->
+                <div class="tasks-list">
+                    <div class="task-item completed">
+                        <div class="task-checkbox checked"></div>
+                        <div class="task-content">5 minutes meditation</div>
+                        <span class="task-category mindfulness">mindfulness</span>
+                        <div class="task-actions">
+                            <button class="btn-book edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="btn-book delete-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-content">Gratitude moment</div>
+                        <span class="task-category mindfulness">mindfulness</span>
+                        <div class="task-actions">
+                            <button class="btn-book edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="btn-book delete-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-checkbox"></div>
+                        <div class="task-content">30 minutes walk</div>
+                        <span class="task-category exercise">exercise</span>
+                        <div class="task-actions">
+                            <button class="btn-book edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="btn-book delete-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h2>Quick Add Tasks</h2>
+                    <div class="benefits-grid">
+                        <button class="benefit-card" data-task="5 minutes meditation" data-category="mindfulness">
+                            <i class="fas fa-peace"></i>
+                            <h3>Quick Meditation</h3>
+                            <p>Take a 5-minute mindfulness break</p>
+                        </button>
+                        <button class="benefit-card" data-task="Drink water" data-category="selfcare">
+                            <i class="fas fa-glass-water"></i>
+                            <h3>Stay Hydrated</h3>
+                            <p>Remember to drink a glass of water</p>
+                        </button>
+                        <button class="benefit-card" data-task="Stretching break" data-category="exercise">
+                            <i class="fas fa-walking"></i>
+                            <h3>Quick Stretch</h3>
+                            <p>Take a short stretching break</p>
+                        </button>
+                        <button class="benefit-card" data-task="Gratitude moment" data-category="mindfulness">
+                            <i class="fas fa-heart"></i>
+                            <h3>Gratitude</h3>
+                            <p>Write down three things you're grateful for</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/todo.js"></script>
+</body>
+</html> 
