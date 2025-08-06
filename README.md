@@ -44,5 +44,9 @@ Files: Hospital Manage System.py
 This system validate the credit card and the type of credit card
 Files: Credit Card.zip
 
+AboutMe
+npm install
+npm run dev
+
 
 
